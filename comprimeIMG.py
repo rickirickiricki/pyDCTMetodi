@@ -14,12 +14,34 @@ import cv2
 import math as m
 import matplotlib.image
 from matplotlib import pyplot as plt
-def dct2(blocco):
-    ris = dct(blocco, 2)
-    return ris
+def dct2(a):
+    size1 = a.shape[0]
+    size2 = a.shape[1]
+    output = np.empty([size1, size2])
+
+    # DCT2 (DCT by row and then by column)
+    for i in range(0, size1):
+        output[i] = dct(a[i], 2, norm='ortho')
+
+    for i in range(0, size2):
+        output[:, i] = dct(output[:, i], 2, norm='ortho')
+    return output
+def idct2Custom(a):
+    size1 = a.shape[0]
+    size2 = a.shape[1]
+    output = np.empty([size1, size2])
+
+    # DCT2 (DCT by row and then by column)
+    for i in range(0, size1):
+        output[i] = idct(a[i], 2, norm='ortho')
+
+    for i in range(0, size2):
+        output[:, i] = idct(output[:, i], 2, norm='ortho')
+    return output
+
 def idct2(blocco):
     #ris=dct(dct(blocco.T, norm='ortho').T, norm='ortho')
-    ris = idct(blocco, 2)
+    ris = idct2Custom(blocco)
     countRiga = 0
     countColonna = 0
     for riga in ris:
@@ -48,6 +70,7 @@ def deleteFrequencies(blocco,d):
         countRiga=countRiga+1
     #print(blocco)
     return blocco
+
 def blockshaped(arr, nrows, ncols):
     h, w = arr.shape
     assert h % nrows == 0, f"{h} rows is not evenly divisible by {nrows}"
@@ -55,13 +78,7 @@ def blockshaped(arr, nrows, ncols):
     return (arr.reshape(h//nrows, nrows, -1, ncols)
                .swapaxes(1,2)
                .reshape(-1, nrows, ncols))
-    #np.split(arr,nrows,ncols)
-    '''lenr = round(arr.shape[0] / nrows)
-    print(lenr)
-    lenc = round(arr.shape[1] / ncols)
-    print(lenc)
-    return np.array([arr[i * nrows:(i + 1) * nrows, j * ncols:(j + 1) * ncols] for (i, j) in np.ndindex(lenr, lenc)]).reshape(lenr, lenc, nrows, ncols)
-    '''
+
 def pseudocodice(immagine,f,d):
     # divido l'immagine in F x F
     img = Image.open(immagine)
@@ -108,4 +125,6 @@ def pseudocodice(immagine,f,d):
 
 
 #pseudocodice("./images/20x20.bmp",10,5)
-pseudocodice("./images/640x640.bmp",2,2)
+#pseudocodice("./images/cathedral.bmp",10,5)
+#pseudocodice("./images/20x20.bmp",10,1)
+pseudocodice("./images/640x640.bmp",4,4)
