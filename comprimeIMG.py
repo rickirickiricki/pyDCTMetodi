@@ -1,3 +1,4 @@
+import sys
 import time
 
 import PIL.Image
@@ -55,6 +56,8 @@ def idct2(blocco):
     return ris
 
 def deleteFrequencies(blocco,d):
+    '''print("dentro delete fre prima")
+    print(blocco)'''
     #newArr=[]
     countRiga=0
     countColonna=0
@@ -62,12 +65,14 @@ def deleteFrequencies(blocco,d):
         for cella in riga:
             if countColonna+countRiga>=d:
                 #print(blocco[countRiga][countColonna])
-                blocco[countRiga][countColonna]=0
+                blocco[countRiga][countColonna]=0 #da controllare in quanto 0 è BIANCO
                 #newArr.append(cella)
             countColonna=countColonna+1
         countColonna=0
         countRiga=countRiga+1
-    #print(blocco)
+
+    '''print("dentro delete fre dopo")
+    print(blocco)'''
     return blocco
 
 def blockshaped(arrayImg, F):
@@ -86,51 +91,52 @@ def blockshaped(arrayImg, F):
 def pseudocodice(immagine,f,d):
     # divido l'immagine in F x F
     img = Image.open(immagine)
-    #img=img.transpose(Image.ROTATE_90)
+    img=img.transpose(Image.ROTATE_90)
     a = np.asarray(img)
     print("immagine")
     print(a.shape)
 
-    arrayGenerale=[]
-    nBlocchi=len(blockshaped(a,f))
-    for block in blockshaped(a,f):
 
-        #per ogni blocco dct2
-        newBlock=dct2(block)
+    # arrayGenerale = []
+    blocks = blockshaped(a, f)
+    height, width = a.shape
+    num_blocks_height = height // f
+    num_blocks_width = width // f
+    new_image_array = np.empty((height, width), dtype=np.uint8)
+    for i, block in enumerate(blocks):
+        # per ogni blocco dct2
+        newBlock = dct2(block)
         '''print("blocco originale")
         print(block)
         print("dct")
         print(newBlock)'''
 
-        #elimino la frequenza in eccesso
-        newArr=deleteFrequencies(newBlock,d)
+        # elimino la frequenza in eccesso
+        newArr = deleteFrequencies(newBlock, d)
         '''print("no freq")
         print(newArr)'''
-        #ricostruisco la idct2 arrotondando i valori
-        idctArr=idct2(newArr)
+        # ricostruisco la idct2 arrotondando i valori
+        idctArr = idct2(newArr)
         '''print("IDCT2")
         print(idctArr)
         print(type(idctArr))'''
+        block_row = i // num_blocks_width
+        block_col = i % num_blocks_width
+        start_row = block_row * f
+        end_row = start_row + f
+        start_col = block_col * f
+        end_col = start_col + f
+        new_image_array[start_row:end_row, start_col:end_col] = idctArr
 
 
-        arrayGenerale.append(idctArr)
 
 
-    #ricompongo immagine mettendo insieme blocchi nell'ordine giusto
-    array = np.array(arrayGenerale, dtype=np.uint8)
-    n=int(m.sqrt(nBlocchi))
-    print("\n\nCon sta roba concateno le varie colonne una accanto all'altra:\n",
-          [np.column_stack(array[start:start + n]) for start in range(0, array.shape[0] - n + 1, n)])
-
-    block_fin = np.concatenate(
-        [np.column_stack(array[start:start + n]) for start in range(0, array.shape[0] - n + 1, n)])
-    print("\n\nblocco finale: \n", block_fin)
-
-    new_image = PIL.Image.fromarray(block_fin)
-    new_image.save('./imagesExported/'+immagine[9:-4]+'_F'+str(f)+'_D'+str(d)+'.png')
+    new_image = PIL.Image.fromarray(new_image_array)
+    new_image = new_image.transpose(Image.ROTATE_270)
+    new_image.save('./imagesExported/'+immagine[9:-4]+'_F'+str(f)+'_D'+str(d)+'.jpg')
 
 
 #pseudocodice("./images/20x20.bmp",10,5)
-pseudocodice("./images/cathedral.bmp",10,18)
+pseudocodice("./images/cathedral.bmp",100,5)
 #pseudocodice("./images/20x20.bmp",8,8)
 #pseudocodice("./images/640x640.bmp",4,4)
