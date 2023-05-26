@@ -3,8 +3,7 @@ import time
 import PIL.Image
 from scipy.fftpack import fft, dct, idct
 import numpy as np
-import scipy.misc
-import split_image
+import pandas as pd
 from PIL import Image
 from skimage import io
 from skimage.io import imread
@@ -71,23 +70,30 @@ def deleteFrequencies(blocco,d):
     #print(blocco)
     return blocco
 
-def blockshaped(arr, nrows, ncols):
-    h, w = arr.shape
-    assert h % nrows == 0, f"{h} rows is not evenly divisible by {nrows}"
-    assert w % ncols == 0, f"{w} cols is not evenly divisible by {ncols}"
-    return (arr.reshape(h//nrows, nrows, -1, ncols)
-               .swapaxes(1,2)
-               .reshape(-1, nrows, ncols))
+def blockshaped(arrayImg, F):
+    height, width = arrayImg.shape
+    blocks = []
+    for y in range(0, height // F * F, F):
+        for x in range(0, width // F * F, F):
+            block = arrayImg[y:y + F, x:x + F]
+            blocks.append(block)
+    '''for i, block in enumerate(blocks):
+        print(block)'''
+
+    return blocks
+
 
 def pseudocodice(immagine,f,d):
     # divido l'immagine in F x F
     img = Image.open(immagine)
+    #img=img.transpose(Image.ROTATE_90)
     a = np.asarray(img)
     print("immagine")
     print(a.shape)
+
     arrayGenerale=[]
-    nBlocchi=len(blockshaped(a,f,f))
-    for block in blockshaped(a,f,f):
+    nBlocchi=len(blockshaped(a,f))
+    for block in blockshaped(a,f):
 
         #per ogni blocco dct2
         newBlock=dct2(block)
@@ -125,6 +131,6 @@ def pseudocodice(immagine,f,d):
 
 
 #pseudocodice("./images/20x20.bmp",10,5)
-#pseudocodice("./images/cathedral.bmp",10,5)
-#pseudocodice("./images/20x20.bmp",10,1)
-pseudocodice("./images/640x640.bmp",4,4)
+pseudocodice("./images/cathedral.bmp",10,18)
+#pseudocodice("./images/20x20.bmp",8,8)
+#pseudocodice("./images/640x640.bmp",4,4)

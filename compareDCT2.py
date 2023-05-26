@@ -61,82 +61,49 @@ def dct2FromScipy(a):
 
     for i in range(0, size2):
         output[:, i] = dct(output[:, i], 2, norm='ortho')
-    ris=dct(a,2)
-    #ris = dct(dct(a.T, norm='ortho').T, norm='ortho')
 
-    print("V1")
-    #print(dctn(a, norm='ortho'))
     return output
 
 
 def dct2FromCode(V):
-    """
-    Implementation from pdf formula (Parte_2.pdf).
-    """
-    '''N = len(V)
-    c = np.zeros(N)
-    for k in range(N):
-        #s = 0
-        for i in range(N):
-            c[k] += V[i] * np.cos(k * np.pi * ((2*i+1) / (2*N)))
-        #c[k]*=2
-        if k == 0:
-            alpha = 1 / m.sqrt(N)
-        else:
-            alpha=m.sqrt(2 / N)
 
-        c[k] =c[k]* alpha'''
-    #           N-1
-    # y[k] = 2* sum x[n]*cos(pi*k*(2n+1)/(2*N)), 0 <= k < N.
-    #           n=0
     n = len(V)
     output = np.zeros(n)
 
     for k in range(0, n):
-        s=0
+        tmp=0
         for i in range(0, n):
-            s += V[i] * np.cos(np.pi * k * (2 * i + 1) / (2 * n))
-
-        # If norm='ortho', y[k] is multiplied by a scaling factor f:
-        #  f = sqrt(1/(4*N)) if k = 0,
-        #  f = sqrt(1/(2*N)) otherwise.
-        '''if k == 0:
-            output[k] *= m.sqrt(1 / (4 * n))
-        else:
-            output[k] *= m.sqrt(1 / (2 * n))'''
+            tmp += V[i] * np.cos(np.pi * k * (2 * i + 1) / (2 * n))
         if k == 0:
             alpha = m.sqrt(1 / (n))
         else:
             alpha = m.sqrt(2/ (n))
-        output[k] = alpha * s
+        output[k] = alpha * tmp
     return output
 def dct2(matrice):
     #N, M = matrice.shape
     N=matrice.shape[0]
     M=matrice.shape[1]
-    C = np.empty([N, M])
+    matOutput = np.empty([N, M])
     #C = np.zeros((N, M), dtype='float')
     # sommatoria su N
     for j in range(M):
-        C[:, j] = dct(matrice[:, j])
+        matOutput[:, j] = dct2FromCode(matrice[:, j])
 
     for i in range(N):
-        C[i, :] = dct(C[i, :])
-    '''for i in range(0,N):
-        C[i] = dct2FromCode(matrice[i])
-
-    #sommatoria su M
-    for i in range(0,M):
-        C[:, i] = dct2FromCode(C[:, i])'''
+        matOutput[i, :] = dct2FromCode(matOutput[i, :])
 
 
 
-    return C
+    return matOutput
 
 print("predefinita")
 print(dct2FromScipy(array))
 print("custom")
 print(dct2(array))
+
+
+#------prove aggiuntive------------
 print("rebuilt from library")
 print(idct(dct2FromScipy(array),2))
 new_image = PIL.Image.fromarray((idct(dct2FromScipy(array),2)))
