@@ -131,6 +131,7 @@ def pseudocodice(immagine,f,d):
 
 
 
+
     new_image = PIL.Image.fromarray(new_image_array)
     new_image = new_image.transpose(Image.ROTATE_270)
     new_image.save('./imagesExported/'+immagine[9:-4]+'_F'+str(f)+'_D'+str(d)+'.jpg')
