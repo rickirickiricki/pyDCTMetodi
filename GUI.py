@@ -5,6 +5,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import pathlib
 import cv2 as cv
+import matplotlib.pylab as plt
+from PIL import Image
 
 class createGUI(QWidget):
     F = 0
@@ -34,7 +36,7 @@ class createGUI(QWidget):
         grid.addWidget(self.createFinalImage(), 1, 1) #load final image
         self.setLayout(grid) #after setting widget to the grid that code create the grid layout
         self.setWindowTitle(self.title) #window title
-        self.setGeometry(self.x, self.y, int(round(self.width / 2)), int(round(self.height / 2)))
+        self.setGeometry(self.x, self.y, 500, 200)
         self.show()
 
 
@@ -43,26 +45,26 @@ class createGUI(QWidget):
         button = QPushButton('Upload', self)
         button.clicked.connect(self.getImage)
         vbox = QVBoxLayout()
-        vbox.addStretch(1)
+       # vbox.addStretch(1)
         vbox.addWidget(button)
         widget.setLayout(vbox)
         return widget
 
     def selectParameters(self):
         widget = QGroupBox('Parameters for compression')
-        self.f = QLabel('F')
+        self.value_f = QLabel('F')
         self.spinboxf = QSpinBox()
         self.spinboxf.setMinimum(1)
-        self.spinboxf.valueChanged.connect(self.value_changed)
-        self.d = QLabel('d')
+        self.spinboxf.valueChanged.connect(self.controlValues)
+        self.value_d = QLabel('d')
         self.spinboxd = QSpinBox()
         self.spinboxd.setMinimum(0)
-        self.spinboxd.valueChanged.connect(self.value_changed)
+        self.spinboxd.valueChanged.connect(self.controlValues)
         vbox = QVBoxLayout()
         vbox.addStretch(1)
-        vbox.addWidget(self.f)
+        vbox.addWidget(self.value_f)
         vbox.addWidget(self.spinboxf)
-        vbox.addWidget(self.d)
+        vbox.addWidget(self.value_d)
         vbox.addWidget(self.spinboxd)
         vbox.addStretch(1)
         button2 = QPushButton('Calculate', self)
@@ -72,6 +74,11 @@ class createGUI(QWidget):
         widget.setLayout(vbox)
         return widget
 
+    def controlValues(self):
+        self.D = self.spinboxd.value()
+        self.F = self.spinboxf.value()
+        self.limitD = (2 * self.F) - 2
+        self.spinboxd.setMaximum(self.limitD)
 
     def createOriginalImage(self):
         widget = QGroupBox('Original Image')
@@ -110,11 +117,7 @@ class createGUI(QWidget):
             self.spinboxf.setMaximum(self.limitF)
 
 
-    def value_changed(self):
-        self.D = self.spinboxd.value()
-        self.F = self.spinboxf.value()
-        self.limitD = (2 * self.value_F) - 2
-        self.spinboxd.setMaximum(self.limitD)
+
 
 
 if __name__ == '__main__':
