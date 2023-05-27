@@ -9,4 +9,6 @@
 #procedura: dividere in blocchi quadrati di f pixel fxf
         #per ogni blocco applicare la dct2 (libreria)
         #eliminare le frequenze k + l>=d
-        
+
+if d < 0 | d > (2 * f - 2):
+    print("d non valida")
