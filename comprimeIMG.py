@@ -135,9 +135,11 @@ def pseudocodice(immagine,f,d):
     new_image = PIL.Image.fromarray(new_image_array)
     new_image = new_image.transpose(Image.ROTATE_270)
     new_image.save('./imagesExported/'+immagine[9:-4]+'_F'+str(f)+'_D'+str(d)+'.jpg')
+    pathLocal='./imagesExported/'+immagine[9:-4]+'_F'+str(f)+'_D'+str(d)+'.jpg'
+    return pathLocal
 
+pseudocodice("./images/20x20.bmp",10,5)
+#pseudocodice("/Users/riccardomoschi/PycharmProjects/pyDCTMetodi/images/gradient.bmp",100,198)
 
-#pseudocodice("./images/20x20.bmp",10,5)
-pseudocodice("./images/cathedral.bmp",100,198)
 #pseudocodice("./images/20x20.bmp",8,8)
 #pseudocodice("./images/640x640.bmp",4,4)
