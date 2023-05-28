@@ -89,20 +89,25 @@ def blockshaped(arrayImg, F):
 
 
 def pseudocodice(immagine,f,d):
+
     # divido l'immagine in F x F
-    img = Image.open(immagine)
-    print(img)
+    img = Image.open(immagine).convert("L")
     img=img.transpose(Image.ROTATE_90)
     a = np.asarray(img)
     print("immagine")
     print(a.shape)
 
+
     # arrayGenerale = []
-    blocks = blockshaped(a, f)
+
+    blocks = blockshaped(a,f)
     height, width = a.shape
     num_blocks_height = height // f
+    new_height = height - (height % f)
+
     num_blocks_width = width // f
-    new_image_array = np.empty((height, width), dtype=np.uint8)
+    new_width = width - (width % f)
+    new_image_array = np.empty((new_height, new_width), dtype=np.uint8)
     for i, block in enumerate(blocks):
         # per ogni blocco dct2
         newBlock = dct2(block)
@@ -128,14 +133,11 @@ def pseudocodice(immagine,f,d):
         end_col = start_col + f
         new_image_array[start_row:end_row, start_col:end_col] = idctArr
 
-
-
-
-
     new_image = PIL.Image.fromarray(new_image_array)
     new_image = new_image.transpose(Image.ROTATE_270)
     new_image.save('./imagesExported/'+immagine[9:-4]+'_F'+str(f)+'_D'+str(d)+'.jpg')
-    return new_image
+    pathLocal='./imagesExported/'+immagine[9:-4]+'_F'+str(f)+'_D'+str(d)+'.jpg'
+    return pathLocal
 
 #pseudocodice("./images/20x20.bmp",10,5)
 #pseudocodice("./images/cathedral.bmp",100,5)
