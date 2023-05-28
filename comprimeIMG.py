@@ -91,11 +91,11 @@ def blockshaped(arrayImg, F):
 def pseudocodice(immagine,f,d):
     # divido l'immagine in F x F
     img = Image.open(immagine)
+    print(img)
     img=img.transpose(Image.ROTATE_90)
     a = np.asarray(img)
     print("immagine")
     print(a.shape)
-
 
     # arrayGenerale = []
     blocks = blockshaped(a, f)
@@ -135,9 +135,9 @@ def pseudocodice(immagine,f,d):
     new_image = PIL.Image.fromarray(new_image_array)
     new_image = new_image.transpose(Image.ROTATE_270)
     new_image.save('./imagesExported/'+immagine[9:-4]+'_F'+str(f)+'_D'+str(d)+'.jpg')
-
+    return new_image
 
 #pseudocodice("./images/20x20.bmp",10,5)
-pseudocodice("./images/cathedral.bmp",100,5)
+#pseudocodice("./images/cathedral.bmp",100,5)
 #pseudocodice("./images/20x20.bmp",8,8)
 #pseudocodice("./images/640x640.bmp",4,4)
