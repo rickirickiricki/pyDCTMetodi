@@ -1,25 +1,12 @@
-import sys
-import time
-
 import PIL.Image
 from scipy.fftpack import fft, dct, idct
 import numpy as np
-import pandas as pd
 from PIL import Image
-from skimage import io
-from skimage.io import imread
-from skimage.color import rgb2gray
-import os
-import cv2
-import math as m
-import matplotlib.image
-from matplotlib import pyplot as plt
 def dct2(a):
     size1 = a.shape[0]
     size2 = a.shape[1]
     output = np.empty([size1, size2])
 
-    # DCT2 (DCT by row and then by column)
     for i in range(0, size1):
         output[i] = dct(a[i], 2, norm='ortho')
 
@@ -31,7 +18,6 @@ def idct2Custom(a):
     size2 = a.shape[1]
     output = np.empty([size1, size2])
 
-    # DCT2 (DCT by row and then by column)
     for i in range(0, size1):
         output[i] = idct(a[i], 2, norm='ortho')
 
@@ -87,17 +73,12 @@ def blockshaped(arrayImg, F):
 
     return blocks
 
-def pseudocodice(immagine,f,d):
+def solve(immagine, f, d):
 
     # divido l'immagine in F x F
     img = Image.open(immagine).convert("L")
     img=img.transpose(Image.ROTATE_90)
     a = np.asarray(img)
-    print("immagine")
-    print(a.shape)
-
-
-    # arrayGenerale = []
 
     blocks = blockshaped(a,f)
     height, width = a.shape
@@ -138,8 +119,4 @@ def pseudocodice(immagine,f,d):
     pathLocal='./imagesExported/'+immagine[9:-4]+'_F'+str(f)+'_D'+str(d)+'.jpg'
     return pathLocal
 
-pseudocodice("./images/20x20.bmp",10,5)
-#pseudocodice("/Users/riccardomoschi/PycharmProjects/pyDCTMetodi/images/gradient.bmp",100,198)
-
-#pseudocodice("./images/20x20.bmp",8,8)
-#pseudocodice("./images/640x640.bmp",4,4)
+solve("./images/20x20.bmp", 10, 5)

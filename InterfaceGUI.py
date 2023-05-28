@@ -4,7 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import cv2 as cv
 
-from comprimeIMG import pseudocodice
+from comprimeIMG import solve
 from PIL import Image
 
 
@@ -118,7 +118,7 @@ class createGUI(QWidget):
         self.pathImage = str(self.pathImage).split("/")[-1]
         self.pathImage = "./images/" + self.pathImage
         print("prima di chiamare pseudo " + self.pathImage)
-        array = pseudocodice(self.pathImage, self.F, self.D)
+        array = solve(self.pathImage, self.F, self.D)
         print("termina pseudo")
         print(array)
         self.finalImage.setPixmap(QPixmap(array).scaled(int(round(self.width / 1.8)), int(round(self.height / 1.8)), Qt.KeepAspectRatio))

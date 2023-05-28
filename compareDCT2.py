@@ -1,10 +1,9 @@
 import time
 
-from scipy.fftpack import fft, dct, dctn,idct
+from scipy.fftpack import dct
 import numpy as np
 import math as m
-import random
-import PIL.Image
+import pandas as pd
 import matplotlib.pyplot as plt
 
 '''array=np.array([[  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
@@ -69,28 +68,26 @@ def dct2FromScipy(a):
     return output
 
 
-def dct2FromCode(V):
+def dct2FromCode(matA):
 
-    n = len(V)
+    n = len(matA)
     output = np.zeros(n)
 
     for k in range(0, n):
         tmp=0
         for i in range(0, n):
-            tmp += V[i] * np.cos(np.pi * k * (2 * i + 1) / (2 * n))
+            tmp += matA[i] * np.cos(np.pi * k * (2 * i + 1) / (2 * n))
         if k == 0:
             alpha = m.sqrt(1 / (n))
         else:
             alpha = m.sqrt(2/ (n))
         output[k] = alpha * tmp
     return output
-def dct2(matrice):
-    #N, M = matrice.shape
+
+def myDct2(matrice):
     N=matrice.shape[0]
     M=matrice.shape[1]
     matOutput = np.empty([N, M])
-    #C = np.zeros((N, M), dtype='float')
-    # sommatoria su N
     for j in range(M):
         matOutput[:, j] = dct2FromCode(matrice[:, j])
 
@@ -105,11 +102,7 @@ def dct2(matrice):
 
 #generazione matrici
 
-N = 100
-i = 2
-timeCustom=[]
-timeDCT=[]
-matrN=[]
+
 
 
 def plotgraph(timeDCT, timeCustom, matrN):
@@ -132,39 +125,49 @@ def plotgraph(timeDCT, timeCustom, matrN):
     # function to show the plot
     plt.show()
 
+def createMatrix(i,N):
+    timeCustom = []
+    timeDCT = []
+    matrN = []
+    while i < N:
+        array = np.random.randint(0, 255, size=(i, i))
+        if i >= 10 and i<100:
+            i += 10
+        elif i>=100:
+            i += 50
+        else:
+            i += 1
+        matrN.append(i)
 
-while i < N:
-    array = np.random.randint(0, 255, size=(i, i))
-    if i >= 10 and i<100:
-        i += 10
-    elif i>=100:
-        i += 50
-    else:
-        i += 1
-    print(array.shape)
-    matrN.append(i)
-    #tempi per funzione custom
-    start=time.time()
-    dct2(array)
-    end=time.time()
-    start=end-start
-    timeCustom.append(start)
-    '''print("tempo custom")
-    print(start)'''
-    #per funzione di default
-    start = time.time()
-    dct2FromScipy(array)
-    end = time.time()
-    start = end - start
-    timeDCT.append(start)
+        #tempi per funzione custom
+        start=time.time()
+        myDct2(array)
+        end=time.time()
+        start=end-start
+        timeCustom.append(start)
 
-    '''print("tempo default")
-    print(start)'''
+        #per funzione di default
+        start = time.time()
+        dct2FromScipy(array)
+        end = time.time()
+        start = end - start
+        timeDCT.append(start)
 
-plotgraph(timeDCT,timeCustom,matrN)
-print(timeCustom)
-print(timeDCT)
 
+    plotgraph(timeDCT,timeCustom,matrN)
+    df = pd.DataFrame(columns=['Matrix Dimension', 'Time Custom', 'Time Default'])
+    df['Matrix Dimension'] = matrN
+    df['Time Custom'] = timeCustom
+    df['Time Default'] = timeDCT
+    df.to_csv("results.csv", index=False)
+    print(df)
+
+
+
+
+N = 100
+fromStart=2
+createMatrix(fromStart,N)
 
 '''print("predefinita")
 print(dct2FromScipy(array))
