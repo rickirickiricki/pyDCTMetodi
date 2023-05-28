@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -9,10 +10,12 @@ import PIL.Image
 from comprimeIMG import pseudocodice, blockshaped, dct2, deleteFrequencies, idct2Custom, idct2
 from PIL import Image
 from scipy.fftpack import fft, dct, idct
-
+from skimage import io
+from skimage.io import imread
+from skimage.color import rgb2gray
 
 class createGUI(QWidget):
-    F = 0
+    F = 1
     D = 0
     limitF = 0
     limitD = 0
@@ -32,8 +35,7 @@ class createGUI(QWidget):
 
     def initializeGUI(self):
         grid = QGridLayout()  # create a grid for widgets
-        grid.addWidget(self.selectUpload(), 0, 0)  # button upload
-        grid.addWidget(self.selectParameters(), 0, 1)  # user parameters
+        grid.addWidget(self.selectUpload(), 0, 0, 1, 2)  # button upload
         grid.addWidget(self.createOriginalImage(), 1, 0)  # load original image
         grid.addWidget(self.createFinalImage(), 1, 1)  # load final image
         self.setLayout(grid)  # after setting widget to the grid that code create the grid layout
@@ -42,26 +44,22 @@ class createGUI(QWidget):
         self.show()
 
     def selectUpload(self):
-        widget = QGroupBox('Upload your Image')
+        widget = QGroupBox('Upload your Image and select parameters')
         button = QPushButton('Upload', self)
+        button.setFixedSize(80,30)
         button.clicked.connect(self.getImage)
         vbox = QVBoxLayout()
-        vbox.addWidget(button)
-        widget.setLayout(vbox)
-
-        return widget
-
-    def selectParameters(self):
-        widget = QGroupBox('Parameters for compression')
+        vbox.addWidget(button, alignment=Qt.AlignHCenter)
         self.value_f = QLabel('Select the block dimension F')
         self.spinboxf = QSpinBox()
         self.spinboxf.setMinimum(1)
+        self.spinboxf.setMaximum(10000)
         self.spinboxf.valueChanged.connect(self.controlValues)
         self.value_d = QLabel('Select frequency elimination D')
         self.spinboxd = QSpinBox()
         self.spinboxd.setMinimum(0)
+        self.spinboxd.setMaximum(10000)
         self.spinboxd.valueChanged.connect(self.controlValues)
-        vbox = QVBoxLayout()
         vbox.addStretch(1)
         vbox.addWidget(self.value_f)
         vbox.addWidget(self.spinboxf)
@@ -69,12 +67,16 @@ class createGUI(QWidget):
         vbox.addWidget(self.spinboxd)
         vbox.addStretch(1)
         button2 = QPushButton('Calculate', self)
-        # button2.clicked.connect(lambda pseudocodice: pseudocodice(self.pathImage, self.F, self.D))
+        #button2.clicked.connect(lambda pseudocodice: pseudocodice(self.pathImage, self.F, self.D))
         button2.clicked.connect(self.calculate)
-        vbox.addWidget(button2)
+        button2.setFixedSize(80, 30)
+        vbox.addWidget(button2, alignment=Qt.AlignHCenter)
         vbox.addStretch(1)
+        vbox.setAlignment(Qt.AlignCenter)
         widget.setLayout(vbox)
         return widget
+
+
 
     def createOriginalImage(self):
         widget = QGroupBox('Original Image')
@@ -209,8 +211,6 @@ def blockshaped(arrayImg, F):
 
 
 def pseudocodice(immagine, f, d):
-    if f == 0:
-        f = 1
     print(f)
     print(d)
     print("dentro pseudo " + immagine)
