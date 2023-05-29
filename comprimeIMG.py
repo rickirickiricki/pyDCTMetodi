@@ -2,31 +2,28 @@ import PIL.Image
 from scipy.fftpack import fft, dct, idct
 import numpy as np
 from PIL import Image
+
 def dct2(a):
     size1 = a.shape[0]
     size2 = a.shape[1]
     output = np.empty([size1, size2])
-
     for i in range(0, size1):
         output[i] = dct(a[i], 2, norm='ortho')
-
     for i in range(0, size2):
         output[:, i] = dct(output[:, i], 2, norm='ortho')
     return output
+
 def idct2Custom(a):
     size1 = a.shape[0]
     size2 = a.shape[1]
     output = np.empty([size1, size2])
-
     for i in range(0, size1):
         output[i] = idct(a[i], 2, norm='ortho')
-
     for i in range(0, size2):
         output[:, i] = idct(output[:, i], 2, norm='ortho')
     return output
 
 def idct2(blocco):
-    #ris=dct(dct(blocco.T, norm='ortho').T, norm='ortho')
     ris = idct2Custom(blocco)
     countRiga = 0
     countColonna = 0
@@ -42,23 +39,15 @@ def idct2(blocco):
     return ris
 
 def deleteFrequencies(blocco,d):
-    '''print("dentro delete fre prima")
-    print(blocco)'''
-    #newArr=[]
     countRiga=0
     countColonna=0
     for riga in blocco:
         for cella in riga:
             if countColonna+countRiga>=d:
-                #print(blocco[countRiga][countColonna])
-                blocco[countRiga][countColonna]=0 #da controllare in quanto 0 è BIANCO
-                #newArr.append(cella)
+                blocco[countRiga][countColonna]=0
             countColonna=countColonna+1
         countColonna=0
         countRiga=countRiga+1
-
-    '''print("dentro delete fre dopo")
-    print(blocco)'''
     return blocco
 
 def blockshaped(arrayImg, F):
@@ -68,9 +57,6 @@ def blockshaped(arrayImg, F):
         for x in range(0, width // F * F, F):
             block = arrayImg[y:y + F, x:x + F]
             blocks.append(block)
-    '''for i, block in enumerate(blocks):
-        print(block)'''
-
     return blocks
 
 def solve(immagine, f, d):
@@ -91,20 +77,12 @@ def solve(immagine, f, d):
     for i, block in enumerate(blocks):
         # per ogni blocco dct2
         newBlock = dct2(block)
-        '''print("blocco originale")
-        print(block)
-        print("dct")
-        print(newBlock)'''
 
         # elimino la frequenza in eccesso
         newArr = deleteFrequencies(newBlock, d)
-        '''print("no freq")
-        print(newArr)'''
+
         # ricostruisco la idct2 arrotondando i valori
         idctArr = idct2(newArr)
-        '''print("IDCT2")
-        print(idctArr)
-        print(type(idctArr))'''
         block_row = i // num_blocks_width
         block_col = i % num_blocks_width
         start_row = block_row * f
@@ -119,4 +97,4 @@ def solve(immagine, f, d):
     pathLocal='./imagesExported/'+immagine[9:-4]+'_F'+str(f)+'_D'+str(d)+'.jpg'
     return pathLocal
 
-solve("./images/20x20.bmp", 10, 5)
+#solve("./images/20x20.bmp", 10, 5)

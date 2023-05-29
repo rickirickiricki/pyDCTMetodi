@@ -9,13 +9,14 @@ from PIL import Image
 
 
 class createGUI(QWidget):
+
+    pathImage = "default"
     F = 1
     D = 0
     limitF = 0
     limitD = 0
-    pathImage = "default"
 
-    def __init__(self):  # constructor initializes the object's attributes
+    def __init__(self):  # costruttore che inizializza gli attributi dell'oggetto
         super().__init__()
         self.title = "DCT program interface"
         screen_resolution = applicationGUI.desktop().screenGeometry()
@@ -28,6 +29,7 @@ class createGUI(QWidget):
         self.initializeGUI()
 
     def initializeGUI(self):
+        # generatore dell'interfaccia grafica
         grid = QGridLayout()  # create a grid for widgets
         grid.addWidget(self.selectUpload(), 0, 0, 1, 2)  # button upload
         grid.addWidget(self.createOriginalImage(), 1, 0)  # load original image
@@ -38,6 +40,7 @@ class createGUI(QWidget):
         self.show()
 
     def selectUpload(self):
+        # gestisce il layout di bottoni e spinbox
         widget = QGroupBox('Upload your Image and select parameters')
         button = QPushButton('Upload', self)
         button.setFixedSize(80,30)
@@ -61,7 +64,6 @@ class createGUI(QWidget):
         vbox.addWidget(self.spinboxd)
         vbox.addStretch(1)
         button2 = QPushButton('Calculate', self)
-        #button2.clicked.connect(lambda pseudocodice: pseudocodice(self.pathImage, self.F, self.D))
         button2.clicked.connect(self.calculate)
         button2.setFixedSize(80, 30)
         vbox.addWidget(button2, alignment=Qt.AlignHCenter)
@@ -71,6 +73,7 @@ class createGUI(QWidget):
         return widget
 
     def createOriginalImage(self):
+        # gestisce layout e immagine caricata
         widget = QGroupBox('Original Image')
         vbox = QVBoxLayout()
         vbox.setAlignment(Qt.AlignCenter)
@@ -78,13 +81,15 @@ class createGUI(QWidget):
         widget.setLayout(vbox)
         return widget
 
-    def controlValues(self):  # checks for correctness of the values
+    def controlValues(self):
+        # controller per i valori di F e D
         self.F = self.spinboxf.value()
         self.D = self.spinboxd.value()
         self.limitD = (2 * self.F) - 2
         self.spinboxd.setMaximum(self.limitD)
 
     def createFinalImage(self):
+        # gestisce layout e immagine compressa
         widget = QGroupBox('Processed Image')
         vbox = QVBoxLayout()
         vbox.setAlignment(Qt.AlignCenter)
@@ -93,6 +98,7 @@ class createGUI(QWidget):
         return widget
 
     def getImage(self):
+        # crea l'immagine caricata con Pixmap
         fileName, _ = QFileDialog.getOpenFileName(self, 'Open File', 'c:\\', "Image Files (*.bmp)")
         self.pathImage = fileName
         grayScaleCheck = QPixmap(fileName).toImage().isGrayscale()
@@ -111,16 +117,13 @@ class createGUI(QWidget):
             self.spinboxf.setMaximum(self.limitF)
 
         img = Image.open(fileName)
-        print(img.filename)
         return img.filename
 
     def calculate(self):
+        # richiama solve() per comprimere l'immagine e crea l'immagine compressa con Pixmap
         self.pathImage = str(self.pathImage).split("/")[-1]
         self.pathImage = "./images/" + self.pathImage
-        print("prima di chiamare pseudo " + self.pathImage)
         array = solve(self.pathImage, self.F, self.D)
-        print("termina pseudo")
-        print(array)
         self.finalImage.setPixmap(QPixmap(array).scaled(int(round(self.width / 1.8)), int(round(self.height / 1.8)), Qt.KeepAspectRatio))
 
 

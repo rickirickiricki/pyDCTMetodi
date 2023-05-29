@@ -14,17 +14,14 @@ def dct2FromScipy(a):
     # DCT2 (DCT by row and then by column)
     for i in range(0, size1):
         output[i] = dct(a[i], 2, norm='ortho')
-
     for i in range(0, size2):
         output[:, i] = dct(output[:, i], 2, norm='ortho')
-
     return output
 
 
 def dct2FromCode(matA):
     n = len(matA)
     output = np.zeros(n)
-
     for k in range(0, n):
         tmp = 0
         for i in range(0, n):
@@ -43,10 +40,8 @@ def myDct2(matrice):
     matOutput = np.empty([N, M])
     for j in range(M):
         matOutput[:, j] = dct2FromCode(matrice[:, j])
-
     for i in range(N):
         matOutput[i, :] = dct2FromCode(matOutput[i, :])
-
     return matOutput
 
 
@@ -90,7 +85,7 @@ def createMatrix(i, N):
         start = end - start
         timeCustom.append(start)
 
-        # per funzione di default
+        # tempi per funzione di default
         start = time.time()
         dct2FromScipy(array)
         end = time.time()
@@ -104,29 +99,3 @@ def createMatrix(i, N):
     df['Time Default'] = timeDCT
     df.to_csv("results.csv", index=False)
     print(df)
-
-
-# N = 100
-# fromStart=2
-# createMatrix(fromStart,N)
-
-'''print("predefinita")
-print(dct2FromScipy(array))
-print("custom")
-print(dct2(array))'''
-
-# ------prove aggiuntive------------
-'''print("rebuilt from library")
-print(idct(dct2FromScipy(array),2))
-new_image = PIL.Image.fromarray((idct(dct2FromScipy(array),2)))
-print(new_image)
-new_image = new_image.convert('RGB')
-new_image.save('PREDEFINITA.png')
-
-print("rebuilt from custom")
-print(idct(dct2(array),2))
-
-new_image = PIL.Image.fromarray(idct(dct2(array),2))
-new_image = new_image.convert('RGB')
-new_image.save('CUSTOM.png')
-'''
