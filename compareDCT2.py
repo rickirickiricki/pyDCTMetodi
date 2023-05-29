@@ -1,59 +1,12 @@
+import math as m
 import time
 
-from scipy.fftpack import dct
-import numpy as np
-import math as m
-import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from scipy.fftpack import dct
 
-'''array=np.array([[  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
-  255,255],
- [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
-  255,255],
- [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
-  255,255],
- [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
-  255,255],
- [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
-  255,255],
- [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
-  255,255],
- [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
-  255,255],
- [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
-  255,255],
- [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
-  255,255],
- [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255,255,
-  255,255],
- [255,255,255,255,255,255,255,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0],
- [255,255,255,255,255,255,255,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0],
- [255,255,255,255,255,255,255,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0],
- [255,255,255,255,255,255,255,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0],
- [255,255,255,255,255,255,255,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0],
- [255,255,255,255,255,255,255,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0],
- [255,255,255,255,255,255,255,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0],
- [255,255,255,255,255,255,255,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0],
- [255,255,255,255,255,255,255,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0],
- [255,255,255,255,255,255,255,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-    0,  0]])'''
-array=np.array([[231,    32,   233,   161,    24,    71,   140,   245],
-   [247 ,   40   ,248,   245   ,124,   204   , 36,   107],
-   [234 ,  202   ,245 ,  167   ,  9 ,  217   ,239 ,  173],
-   [193  , 190   ,100  , 167   , 43  , 180  ,   8  ,  70],
-    [11   , 24  , 210  , 177   , 81  , 243   ,  8   ,112],
-    [97  , 195   ,203  ,  47  , 125  , 114  , 165   ,181],
-   [193   , 70 ,  174   ,167 ,   41  ,  30  , 127   ,245],
-    [87   ,149,    57   ,192,    65  , 129 ,  178   ,228]])
+
 def dct2FromScipy(a):
     size1 = a.shape[0]
     size2 = a.shape[1]
@@ -69,24 +22,24 @@ def dct2FromScipy(a):
 
 
 def dct2FromCode(matA):
-
     n = len(matA)
     output = np.zeros(n)
 
     for k in range(0, n):
-        tmp=0
+        tmp = 0
         for i in range(0, n):
             tmp += matA[i] * np.cos(np.pi * k * (2 * i + 1) / (2 * n))
         if k == 0:
             alpha = m.sqrt(1 / (n))
         else:
-            alpha = m.sqrt(2/ (n))
+            alpha = m.sqrt(2 / (n))
         output[k] = alpha * tmp
     return output
 
+
 def myDct2(matrice):
-    N=matrice.shape[0]
-    M=matrice.shape[1]
+    N = matrice.shape[0]
+    M = matrice.shape[1]
     matOutput = np.empty([N, M])
     for j in range(M):
         matOutput[:, j] = dct2FromCode(matrice[:, j])
@@ -94,25 +47,15 @@ def myDct2(matrice):
     for i in range(N):
         matOutput[i, :] = dct2FromCode(matOutput[i, :])
 
-
-
     return matOutput
 
 
-
-#generazione matrici
-
-
-
-
 def plotgraph(timeDCT, timeCustom, matrN):
-
-
     # corresponding y axis values
 
     plt.yscale("log")
-    plt.plot(matrN,timeDCT,label="DCT")
-    plt.plot(matrN,timeCustom,label="Custom")
+    plt.plot(matrN, timeDCT, label="DCT")
+    plt.plot(matrN, timeCustom, label="Custom")
 
     # naming the x axis
     plt.xlabel('matrix size')
@@ -125,36 +68,36 @@ def plotgraph(timeDCT, timeCustom, matrN):
     # function to show the plot
     plt.show()
 
-def createMatrix(i,N):
+
+def createMatrix(i, N):
     timeCustom = []
     timeDCT = []
     matrN = []
     while i < N:
         array = np.random.randint(0, 255, size=(i, i))
-        if i >= 10 and i<100:
+        if i >= 10 and i < 100:
             i += 10
-        elif i>=100:
+        elif i >= 100:
             i += 50
         else:
             i += 1
         matrN.append(i)
 
-        #tempi per funzione custom
-        start=time.time()
+        # tempi per funzione custom
+        start = time.time()
         myDct2(array)
-        end=time.time()
-        start=end-start
+        end = time.time()
+        start = end - start
         timeCustom.append(start)
 
-        #per funzione di default
+        # per funzione di default
         start = time.time()
         dct2FromScipy(array)
         end = time.time()
         start = end - start
         timeDCT.append(start)
 
-
-    plotgraph(timeDCT,timeCustom,matrN)
+    plotgraph(timeDCT, timeCustom, matrN)
     df = pd.DataFrame(columns=['Matrix Dimension', 'Time Custom', 'Time Default'])
     df['Matrix Dimension'] = matrN
     df['Time Custom'] = timeCustom
@@ -163,27 +106,16 @@ def createMatrix(i,N):
     print(df)
 
 
-
-
-N = 100
-fromStart=2
-createMatrix(fromStart,N)
+# N = 100
+# fromStart=2
+# createMatrix(fromStart,N)
 
 '''print("predefinita")
 print(dct2FromScipy(array))
 print("custom")
 print(dct2(array))'''
 
-
-
-
-
-
-
-
-
-
-#------prove aggiuntive------------
+# ------prove aggiuntive------------
 '''print("rebuilt from library")
 print(idct(dct2FromScipy(array),2))
 new_image = PIL.Image.fromarray((idct(dct2FromScipy(array),2)))
@@ -198,39 +130,3 @@ new_image = PIL.Image.fromarray(idct(dct2(array),2))
 new_image = new_image.convert('RGB')
 new_image.save('CUSTOM.png')
 '''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
