@@ -57,17 +57,17 @@ class createGUI(QWidget):
         self.spinboxd.setMinimum(0)
         self.spinboxd.setMaximum(10000)
         self.spinboxd.valueChanged.connect(self.controlValues)
-        vbox.addStretch(1)
+        #vbox.addStretch(1)
         vbox.addWidget(self.value_f)
         vbox.addWidget(self.spinboxf)
         vbox.addWidget(self.value_d)
         vbox.addWidget(self.spinboxd)
-        vbox.addStretch(1)
+        #vbox.addStretch(1)
         button2 = QPushButton('Calculate', self)
         button2.clicked.connect(self.calculate)
         button2.setFixedSize(80, 30)
         vbox.addWidget(button2, alignment=Qt.AlignHCenter)
-        vbox.addStretch(1)
+        #vbox.addStretch(1)
         vbox.setAlignment(Qt.AlignCenter)
         widget.setLayout(vbox)
         return widget
@@ -105,8 +105,9 @@ class createGUI(QWidget):
         if grayScaleCheck == False:
             message = QMessageBox()
             message.setIcon(QMessageBox.Critical)
-            message.setInformativeText('Not Grayscale Image')
-            message.setWindowTitle("Error")
+            message.setText("Error")
+            message.setInformativeText("Not Grayscale Image")
+            message.setWindowTitle("Alert")
             message.exec_()
         else:
             imageRead = cv.imread(fileName)
@@ -116,8 +117,6 @@ class createGUI(QWidget):
             self.limitF = min(self.imageHeight, self.imageWidth)
             self.spinboxf.setMaximum(self.limitF)
 
-        img = Image.open(fileName)
-        return img.filename
 
     def calculate(self):
         # richiama solve() per comprimere l'immagine e crea l'immagine compressa con Pixmap
