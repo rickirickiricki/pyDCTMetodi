@@ -30,12 +30,12 @@ class createGUI(QWidget):
 
     def initializeGUI(self):
         # generatore dell'interfaccia grafica
-        grid = QGridLayout()  # create a grid for widgets
-        grid.addWidget(self.selectUpload(), 0, 0, 1, 2)  # button upload
-        grid.addWidget(self.createOriginalImage(), 1, 0)  # load original image
-        grid.addWidget(self.createFinalImage(), 1, 1)  # load final image
-        self.setLayout(grid)  # after setting widget to the grid that code create the grid layout
-        self.setWindowTitle(self.title)  # window title
+        grid = QGridLayout()
+        grid.addWidget(self.selectUpload(), 0, 0, 1, 2)
+        grid.addWidget(self.createOriginalImage(), 1, 0)
+        grid.addWidget(self.createFinalImage(), 1, 1)
+        self.setLayout(grid)
+        self.setWindowTitle(self.title)
         self.setGeometry(self.x, self.y, 500, 240)
         self.show()
 

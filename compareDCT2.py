@@ -46,21 +46,13 @@ def myDct2(matrice):
 
 
 def plotgraph(timeDCT, timeCustom, matrN):
-    # corresponding y axis values
-
     plt.yscale("log")
     plt.plot(matrN, timeDCT, label="DCT")
     plt.plot(matrN, timeCustom, label="Custom")
-
-    # naming the x axis
     plt.xlabel('matrix size')
-    # naming the y axis
     plt.ylabel('time')
-
-    # giving a title to my graph
     plt.title('Comparison time')
     plt.legend()
-    # function to show the plot
     plt.show()
 
 
