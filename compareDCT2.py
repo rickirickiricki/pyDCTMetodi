@@ -60,14 +60,8 @@ def createMatrix(i, N):
     timeCustom = []
     timeDCT = []
     matrN = []
-    while i < N:
+    while i <= N:
         array = np.random.randint(0, 255, size=(i, i))
-        if i >= 10 and i < 100:
-            i += 10
-        elif i >= 100:
-            i += 50
-        else:
-            i += 1
         matrN.append(i)
 
         # tempi per funzione custom
@@ -83,6 +77,13 @@ def createMatrix(i, N):
         end = time.time()
         start = end - start
         timeDCT.append(start)
+        print(i)
+        if i >= 10 and i < 100:
+            i += 10
+        elif i >= 100:
+            i += 50
+        else:
+            i += 1
 
     plotgraph(timeDCT, timeCustom, matrN)
     df = pd.DataFrame(columns=['Matrix Dimension', 'Time Custom', 'Time Default'])
